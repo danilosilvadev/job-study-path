@@ -29,6 +29,9 @@ body {
 }
 a { color: var(--blue); font-weight: 800; }
 button { font: inherit; cursor: pointer; }
+.hidden { display: none !important; }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
 
 /* top bar */
 .topbar {
@@ -43,8 +46,27 @@ button { font: inherit; cursor: pointer; }
 
 .wrap { max-width: 520px; margin: 0 auto; padding: 14px 16px 120px; }
 
+/* avatars */
+.av { display: inline-block; line-height: 0; flex: none; }
+.av svg { overflow: visible; }
+.av.idle svg { animation: bob 2.2s ease-in-out infinite; }
+.av.happy svg { animation: pop .5s cubic-bezier(.2,1.3,.4,1) both; }
+.av.cheer svg { animation: jump .7s ease-in-out 2; }
+.av.sad svg { animation: shake .5s ease both; }
+@keyframes jump { 0%,100% { transform: translateY(0); } 40% { transform: translateY(-14px); } }
+@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.hero, .lesson-hero, .ex-row { display: flex; align-items: center; gap: 12px; margin: 6px 0 14px; }
+.bubble {
+  position: relative; background: var(--card); border: 2px solid var(--line); border-radius: 16px;
+  padding: 10px 14px; font-weight: 800; font-size: .95rem; flex: 1; min-width: 0;
+}
+.bubble::before {
+  content: ""; position: absolute; left: -9px; top: 50%; margin-top: -7px; width: 14px; height: 14px;
+  background: var(--card); border-left: 2px solid var(--line); border-bottom: 2px solid var(--line); transform: rotate(45deg);
+}
+
 /* progress */
-.progress { height: 16px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 4px 0 6px; }
+.progress { height: 16px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 4px 0 6px; flex: 1; }
 .progress span { display: block; height: 100%; width: 0; background: var(--green); border-radius: 999px; transition: width .6s cubic-bezier(.2,1.2,.4,1); }
 .progress-label { font-size: .85rem; color: var(--muted); margin-bottom: 14px; }
 
@@ -63,7 +85,7 @@ button { font: inherit; cursor: pointer; }
 .node-btn {
   width: 76px; height: 68px; border-radius: 50%; border: 0; background: var(--green); color: #fff;
   box-shadow: 0 7px 0 var(--green-d); font-size: 1.6rem; display: grid; place-items: center; position: relative;
-  transition: transform .08s ease, box-shadow .08s ease;
+  transition: transform .08s ease, box-shadow .08s ease; animation: pop .4s cubic-bezier(.2,1.3,.4,1) both;
 }
 .node-btn:active { transform: translateY(5px); box-shadow: 0 2px 0 var(--green-d); }
 .node-btn.locked { background: #e5e5e5; box-shadow: 0 7px 0 #cfcfcf; color: #afafaf; }
@@ -78,14 +100,13 @@ button { font: inherit; cursor: pointer; }
 .path .row:nth-child(4n+1) { transform: translateX(24px); }
 @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 @keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
-.node-btn { animation: pop .4s cubic-bezier(.2,1.3,.4,1) both; }
 
-/* bottom sheet (lesson) */
+/* bottom sheet */
 .scrim { position: fixed; inset: 0; background: rgba(0,0,0,.45); opacity: 0; pointer-events: none; transition: opacity .25s; z-index: 20; }
 .scrim.open { opacity: 1; pointer-events: auto; }
 .sheet {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 21; background: var(--card); color: var(--ink);
-  border-radius: 24px 24px 0 0; max-height: 88vh; overflow-y: auto; overscroll-behavior: contain;
+  border-radius: 24px 24px 0 0; max-height: 92vh; overflow-y: auto; overscroll-behavior: contain;
   transform: translateY(105%); transition: transform .35s cubic-bezier(.2,1,.3,1);
   padding: 10px 18px calc(24px + env(safe-area-inset-bottom, 0px));
   box-shadow: 0 -6px 24px rgba(0,0,0,.15);
@@ -93,7 +114,13 @@ button { font: inherit; cursor: pointer; }
 .sheet.open { transform: translateY(0); }
 .grab { width: 44px; height: 5px; border-radius: 999px; background: var(--line); margin: 4px auto 12px; }
 .sheet h3 { font-size: 1.35rem; font-weight: 900; margin: 0 0 6px; }
-.sheet .sum { margin: 0 0 14px; font-weight: 600; }
+.sec-h { font-size: .8rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 18px 0 6px; }
+.para { margin: 0 0 10px; font-weight: 600; }
+.tabs { display: flex; gap: 6px; background: var(--line); border-radius: 14px; padding: 4px; margin: 4px 0 14px; }
+.tab { flex: 1; border: 0; background: transparent; color: var(--muted); font-weight: 900; text-transform: uppercase; letter-spacing: .04em; font-size: .8rem; padding: 9px 4px; border-radius: 10px; }
+.tab.on { background: var(--card); color: var(--green-d); box-shadow: 0 2px 0 var(--line); }
+.x { position: absolute; right: 14px; top: 10px; background: none; border: 0; color: var(--muted); font-size: 1.2rem; font-weight: 900; }
+.sheet { position: fixed; }
 .btn {
   display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; text-align: center; text-decoration: none;
   padding: 14px 16px; border-radius: 16px; border: 2px solid; border-bottom-width: 5px; font-weight: 900; text-transform: uppercase;
@@ -105,12 +132,30 @@ button { font: inherit; cursor: pointer; }
 .btn.ghost { background: var(--card); color: var(--blue); border-color: var(--line); }
 .btn:disabled { background: #e5e5e5; color: #9a9a9a; border-color: #cfcfcf; cursor: default; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn:disabled { background: #2a3a43; color: #7b8a93; border-color: #37464f; } }
+:root[data-theme="dark"] .btn:disabled { background: #2a3a43; color: #7b8a93; border-color: #37464f; }
 .btn.ghost:hover, .btn.ghost:focus-visible { border-color: var(--blue); }
 .tag { display: inline-block; font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; padding: 3px 9px; border-radius: 999px; background: #fff4c2; color: #8a6a00; margin-bottom: 8px; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tag { background: #3a3010; color: #ffd84d; } }
+:root[data-theme="dark"] .tag { background: #3a3010; color: #ffd84d; }
+.code { background: #1f2c34; color: #f2f2f2; border-radius: 14px; padding: 12px 14px; overflow-x: auto; margin: 6px 0 12px; }
+.code pre, pre.code { margin: 0; font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .8rem; font-weight: 500; line-height: 1.5; white-space: pre; }
 
-/* quiz */
-.quiz-q { font-size: 1.15rem; font-weight: 900; margin: 6px 0 14px; }
+/* reads */
+.post { background: var(--card); border: 2px solid var(--line); border-bottom-width: 4px; border-radius: 16px; padding: 14px; margin: 10px 0; }
+.post-h { font-weight: 900; line-height: 1.3; }
+.meta { font-size: .82rem; color: var(--muted); margin: 4px 0 8px; font-weight: 700; }
+.stars { color: var(--yellow-d); letter-spacing: 1px; font-size: .95rem; }
+.stars .off { color: var(--line); }
+
+/* practice */
+.pr-top { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.hearts { display: flex; gap: 2px; color: var(--red); font-size: 1.2rem; }
+.hearts .lost { color: var(--line); }
+.ex-prompt { margin: 6px 0 14px; }
+.quiz-q { font-size: 1.15rem; font-weight: 900; line-height: 1.35; }
+.blank-slot { display: inline-block; min-width: 96px; border-bottom: 3px solid var(--blue); text-align: center; padding: 0 8px; margin: 0 4px; cursor: pointer; color: var(--blue); }
+.blank-slot.filled { color: var(--ink); border-color: var(--green); }
+.locked { pointer-events: none; }
 .opt {
   display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 14px 16px; margin: 8px 0;
   border: 2px solid var(--line); border-bottom-width: 5px; border-radius: 16px; background: var(--card); color: var(--ink);
@@ -119,16 +164,39 @@ button { font: inherit; cursor: pointer; }
 .opt:active { transform: translateY(2px); border-bottom-width: 3px; }
 .opt .key { width: 28px; height: 28px; border-radius: 8px; border: 2px solid var(--line); display: grid; place-items: center; font-size: .85rem; flex: none; color: var(--muted); }
 .opt.sel { border-color: var(--blue); color: var(--blue); }
+.opt.sel .key { border-color: var(--blue); color: var(--blue); }
 .opt.ok { border-color: var(--green); background: var(--green-l); color: var(--green-d); }
 .opt.bad { border-color: var(--red); background: var(--red-l); color: var(--red-d); }
-.feedback { border-radius: 16px; padding: 12px 14px; margin: 10px 0 0; font-weight: 800; display: none; }
-.feedback.show { display: block; animation: pop .3s ease both; }
-.feedback.ok { background: var(--green-l); color: var(--green-d); }
-.feedback.bad { background: var(--red-l); color: var(--red-d); }
-.feedback small { display: block; font-weight: 600; color: var(--ink); margin-top: 4px; }
+.tf { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.opt-big { padding: 22px 10px; font-size: 1.1rem; border: 2px solid var(--line); border-bottom-width: 5px; border-radius: 16px; background: var(--card); color: var(--ink); font-weight: 900; }
+.opt-big.sel { border-color: var(--blue); color: var(--blue); }
+.tile {
+  display: inline-flex; align-items: center; padding: 10px 14px; margin: 4px; border: 2px solid var(--line); border-bottom-width: 4px;
+  border-radius: 12px; background: var(--card); color: var(--ink); font-weight: 800; font-size: .95rem; text-align: left;
+}
+.tile.used { opacity: .3; pointer-events: none; }
+.tile.on { border-color: var(--blue); color: var(--blue); }
+.built { min-height: 58px; border-bottom: 2px dashed var(--line); padding: 6px 0 10px; margin-bottom: 10px; display: flex; flex-wrap: wrap; }
+.bank { display: flex; flex-wrap: wrap; }
+.ans { width: 100%; font: inherit; padding: 14px; border: 2px solid var(--line); border-radius: 14px; background: var(--card); color: var(--ink); font-weight: 800; font-size: 1.05rem; margin-top: 6px; }
+.ans:focus { outline: none; border-color: var(--blue); }
+.match { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mcol { display: flex; flex-direction: column; gap: 8px; }
+.mt { border: 2px solid var(--line); border-bottom-width: 4px; border-radius: 14px; background: var(--card); color: var(--ink); font-weight: 800; padding: 12px 8px; font-size: .88rem; min-height: 56px; }
+.mt.sel { border-color: var(--blue); color: var(--blue); }
+.mt.matched { border-color: var(--green); background: var(--green-l); color: var(--green-d); pointer-events: none; }
+.mt.miss { border-color: var(--red); background: var(--red-l); color: var(--red-d); }
+.codeline { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .8rem; font-weight: 500; white-space: pre; padding: 4px 8px; border-radius: 6px; border: 2px solid transparent; cursor: pointer; line-height: 1.5; }
+.codeline:hover { background: rgba(255,255,255,.08); }
+.codeline.sel { border-color: var(--blue); background: rgba(28,176,246,.18); }
+.pr-foot { margin-top: 14px; border-top: 2px solid var(--line); padding-top: 10px; }
+.fbbar { border-radius: 16px; padding: 12px 14px; margin-bottom: 4px; font-weight: 800; display: none; }
+.fbbar.show { display: block; animation: pop .3s ease both; }
+.fbbar.ok { background: var(--green-l); color: var(--green-d); }
+.fbbar.bad { background: var(--red-l); color: var(--red-d); }
+.fbbar small { display: block; font-weight: 600; color: var(--ink); margin-top: 4px; }
 .done-screen { text-align: center; padding: 10px 0 0; }
-.done-screen .big { font-size: 3.2rem; }
-.done-screen h3 { margin: 6px 0; }
+.done-screen h3 { margin: 10px 0 6px; }
 
 /* bottom nav */
 .nav {
@@ -146,8 +214,9 @@ button { font: inherit; cursor: pointer; }
 .card { background: var(--card); border: 2px solid var(--line); border-bottom-width: 5px; border-radius: 18px; padding: 16px; margin: 12px 0; }
 .card h4 { margin: 0 0 6px; font-weight: 900; }
 .card p { margin: 0 0 8px; font-weight: 600; }
-.muted { color: var(--muted); font-size: .9rem; }
-.hidden { display: none !important; }
+.buddies { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.buddy { background: var(--card); border: 2px solid var(--line); border-bottom-width: 4px; border-radius: 16px; padding: 8px 4px 10px; color: var(--ink); font-weight: 900; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.buddy.on { border-color: var(--green); background: var(--green-l); }
 .reset { background: none; border: 0; color: var(--muted); font-weight: 800; text-decoration: underline; padding: 10px 0; }
 .legal { font-size: .8rem; color: var(--muted); margin-top: 18px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -165,10 +234,11 @@ button { font: inherit; cursor: pointer; }
 
   <!-- PATH SCREEN -->
   <section class="screen on" id="screen-path">
+    <div id="hero"></div>
     <div class="progress"><span id="bar"></span></div>
     <div class="progress-label" id="progressLabel">0 of 26 lessons</div>
     <div id="path"></div>
-    <p class="legal">Tap a lesson, read the summary, watch a video (opens YouTube in a new tab), then answer the questions. Lessons unlock one by one.</p>
+    <p class="legal">Each lesson has three parts. <b>Learn</b>: summary, explanation and a worked example. <b>Reads</b>: posts from the web, each rated for quality. <b>Practice</b>: mixed question types with 3 hearts. Lessons unlock in order of your choosing.</p>
     <button class="reset" id="reset" type="button">Reset progress</button>
   </section>
 
@@ -180,6 +250,11 @@ button { font: inherit; cursor: pointer; }
       <p>XP: <b id="statXp">0</b></p>
       <p>Day streak: <b id="statStreak">0</b></p>
       <p>Questions right: <b id="statRight">0</b> / <b id="statAsked">0</b></p>
+    </div>
+    <div class="card" id="buddyCard">
+      <h4>Your study buddy</h4>
+      <p class="muted small">Pick who guides you through the lessons.</p>
+      <div class="buddies" id="buddies"></div>
     </div>
     <div class="card">
       <h4>Suggested order</h4>
@@ -200,108 +275,89 @@ button { font: inherit; cursor: pointer; }
   <div id="sheetBody"></div>
 </div>
 
+<script src="lessons.js"></script>
 <script>
 (function () {
-  // Units and lessons. Each lesson: summary, a YouTube search (opens a real results page), optional extra link, and two quiz questions.
-  var UNITS = [
-    { name: 'Algorithms', color: '', lessons: [
-      { id: 'bigo', title: 'Big-O notation', sum: 'Big-O describes how time or memory grows with input size n, ignoring constants. O(1) is constant, O(log n) halves each step, O(n) scans once, O(n²) compares every pair.', yt: 'Big O notation explained for beginners', quiz: [
-        { q: 'A loop that visits each item once is roughly:', o: ['O(1)', 'O(n)', 'O(n²)', 'O(log n)'], a: 1, why: 'One pass over n items is linear: O(n).' },
-        { q: 'Halving the search range every step gives:', o: ['O(n)', 'O(n²)', 'O(log n)', 'O(1)'], a: 2, why: 'Halving repeatedly takes about log n steps.' } ] },
-      { id: 'hash', title: 'Hash maps', sum: 'A hash map stores key–value pairs. A hash function turns each key into an array index, so lookup, insert and delete are O(1) on average. Use it for "have I seen this?" and counting.', yt: 'hash map hash table explained coding interview', quiz: [
-        { q: 'Average cost of a hash map lookup by key:', o: ['O(n)', 'O(log n)', 'O(1)', 'O(n log n)'], a: 2, why: 'A hash map jumps straight to the slot: O(1) on average.' },
-        { q: 'Two keys landing in the same slot is called:', o: ['A collision', 'A deadlock', 'A rehash', 'A cycle'], a: 0, why: 'Collisions are handled by chaining or open addressing.' } ] },
-      { id: 'twoptr', title: 'Two pointers and sliding window', sum: 'Two pointers move through an array from both ends or in the same direction. Sliding window keeps a range [left, right] that grows and shrinks while you track a condition. Each pointer only moves forward, so the cost is O(n).', yt: 'NeetCode sliding window two pointers', quiz: [
-        { q: 'Sliding window problems usually run in:', o: ['O(n²)', 'O(n)', 'O(2ⁿ)', 'O(n log n)'], a: 1, why: 'Each pointer moves forward only, so each element is visited a constant number of times.' },
-        { q: 'In sliding window, what changes as the window moves?', o: ['The array is sorted', 'left and right move forward', 'The hash map is rebuilt', 'The array is copied'], a: 1, why: 'The window expands at right and shrinks at left.' } ] },
-      { id: 'binsearch', title: 'Binary search', sum: 'On a sorted array, check the middle. If the target is smaller, search the left half; otherwise the right half. Each step halves the range: O(log n). The common bug is off-by-one at the bounds.', yt: 'Binary Search Algorithm in 100 Seconds fireship', spec: true, quiz: [
-        { q: 'Binary search needs the input to be:', o: ['Sorted', 'A hash map', 'A linked list', 'Unique'], a: 0, why: 'Halving only works if you know which side the target is on.' },
-        { q: 'Binary search on 1,000,000 sorted items takes about:', o: ['1,000,000 steps', '1,000 steps', '20 steps', '2 steps'], a: 2, why: 'log2(1,000,000) ≈ 20.' } ] },
-      { id: 'stack', title: 'Stacks, queues and linked lists', sum: 'A stack is last-in, first-out. A queue is first-in, first-out. A linked list is nodes that point to the next node: inserting at a known node is O(1), but finding an item is O(n).', yt: 'Getting started with data structures in JavaScript stack queue linked list', spec: true, quiz: [
-        { q: 'A stack is:', o: ['First in, first out', 'Last in, first out', 'Sorted by key', 'A tree'], a: 1, why: 'Push and pop work at the top: last in, first out.' },
-        { q: 'Finding a value in a linked list costs:', o: ['O(1)', 'O(n)', 'O(log n)', 'O(n²)'], a: 1, why: 'You must walk node by node.' } ] },
-      { id: 'trees', title: 'Trees, BFS and DFS', sum: 'Depth-first search goes down one branch before the next (recursion or a stack). Breadth-first search visits level by level (a queue). Both visit every node once: O(n). BFS finds shortest paths in unweighted graphs.', yt: 'Binary tree traversal breadth-first and depth-first strategies mycodeschool', spec: true, quiz: [
-        { q: 'Which search uses a queue and visits level by level?', o: ['DFS', 'BFS', 'Binary search', 'Topological sort'], a: 1, why: 'BFS processes nodes in the order they are discovered, level by level.' },
-        { q: 'BFS finds the shortest path when:', o: ['Edges have weights', 'Every edge has the same cost', 'The graph is a tree with negative values', 'It is never'], a: 1, why: 'With equal edge costs, the first time BFS reaches a node is the shortest route.' } ] },
-      { id: 'heap', title: 'Heaps and priority queues', sum: 'A heap is a tree stored in an array where each parent is smaller (min heap) or larger (max heap) than its children. The top is O(1); insert and remove are O(log n). For top K, keep a min heap of size K.', yt: 'K Closest Points to Origin NeetCode 973', spec: true, quiz: [
-        { q: 'In a min heap, the top element is:', o: ['The largest', 'The smallest', 'The newest', 'The median'], a: 1, why: 'The parent is always smaller than its children.' },
-        { q: 'For the K largest items in a stream, you keep a heap of size K that is:', o: ['Max heap', 'Min heap', 'Sorted list', 'Hash map'], a: 1, why: 'A min heap of size K holds the K largest seen so far; its top is the smallest of them.' } ] },
-      { id: 'graphs', title: 'Graphs and topological sort', sum: 'Topological sort orders the nodes of a directed acyclic graph so every edge goes forward, which fits prerequisites such as courses. Kahn\'s method removes nodes with no incoming edges. If nodes remain, there is a cycle.', yt: 'LeetCode 207 Course Schedule topological sort', spec: true, quiz: [
-        { q: 'Topological sort needs the graph to be:', o: ['Undirected', 'A directed acyclic graph', 'Weighted', 'A tree'], a: 1, why: 'A cycle makes a valid ordering impossible.' },
-        { q: 'In Kahn\'s method, you start with nodes that have:', o: ['No outgoing edges', 'No incoming edges', 'The most edges', 'The highest id'], a: 1, why: 'Nodes with in-degree 0 can come first.' } ] },
-      { id: 'intervals', title: 'Merge intervals', sum: 'Sort intervals by start time. If the current interval starts before the last merged one ends, extend that end; otherwise start a new one. Sorting costs O(n log n).', yt: 'NeetCode merge intervals', quiz: [
-        { q: 'The first step in merge intervals is usually:', o: ['Sort by start time', 'Build a heap', 'Reverse the list', 'Hash each interval'], a: 0, why: 'Sorting by start makes overlaps adjacent.' },
-        { q: 'Two intervals overlap when:', o: ['The second starts after the first ends', 'The second starts before the first ends', 'They have equal length', 'They are both empty'], a: 1, why: 'If the next start is before the current end, they overlap.' } ] },
-      { id: 'dp', title: 'Dynamic programming (intro)', sum: 'DP reuses answers to smaller subproblems. Write the recurrence first: ways(n) = ways(n−1) + ways(n−2) for climbing stairs. House Robber: best(i) = max(best(i−1), best(i−2) + value[i]).', yt: 'Introduction to Dynamic Programming Mastering 1D Problems', spec: true, quiz: [
-        { q: 'Climbing stairs (1 or 2 steps) follows the recurrence:', o: ['ways(n) = ways(n−1) + ways(n−2)', 'ways(n) = n', 'ways(n) = 2ⁿ', 'ways(n) = ways(n/2)'], a: 0, why: 'The last move is one step or two steps, so the counts add.' },
-        { q: 'Memoisation means:', o: ['Storing answers to subproblems', 'Sorting the input', 'Using more threads', 'Deleting recursion'], a: 0, why: 'Store each subproblem result so it is computed once.' } ] }
-    ]},
-    { name: 'Backend and databases', color: 'b', lessons: [
-      { id: 'nplus1', title: 'N+1 queries', sum: 'Loading a list (1 query) and then a related row for each item (N queries) costs N+1 round trips. Fix it with eager loading or a JOIN, so the database returns everything in one or two queries.', yt: 'N+1 query problem explained', spec: true, extra: ['Zuplo: N+1 in GraphQL (API World 2024)', 'https://www.youtube.com/results?search_query=Zuplo+N%2B1+GraphQL+API+World+2024'], quiz: [
-        { q: 'A list of 50 orders, then one query per order for its customer, is:', o: ['1 query', '51 queries', '50 queries', '2 queries'], a: 1, why: '1 query for the list plus 50 follow-ups is N+1 = 51.' },
-        { q: 'Best fix for N+1 is:', o: ['Add more servers', 'Eager loading or a JOIN', 'Remove the index', 'Use more RAM'], a: 1, why: 'Fetch the related rows in one go.' } ] },
-      { id: 'lostupd', title: 'Transactions and the lost update', sum: 'A transaction makes statements succeed or fail together (ACID). A lost update happens when two transactions read the same row and both write back, so one write overwrites the other. Fix with SELECT ... FOR UPDATE, an atomic UPDATE, or a stricter isolation level.', yt: 'lost update database transactions SELECT FOR UPDATE explained', extra: ['Vlad Mihalcea: lost updates and locking (written guide)', 'https://vladmihalcea.com/a-beginners-guide-to-database-locking-and-the-lost-update-phenomena'], quiz: [
-        { q: 'A lost update happens when:', o: ['Two transactions overwrite each other\'s writes after reading the same value', 'A server crashes', 'A table is deleted', 'An index is missing'], a: 0, why: 'Both read the old value, both write back, and one write is lost.' },
-        { q: 'An atomic UPDATE like "SET n = n - 1" is safer because:', o: ['The database does the math in one step', 'It sorts rows', 'It caches reads', 'It needs no transaction'], a: 0, why: 'The read-modify-write happens inside the database in one statement.' } ] }
-    ]},
-    { name: 'System design', color: 'y', lessons: [
-      { id: 'lb', title: 'Load balancers', sum: 'A load balancer sends each request to one of several servers and drops unhealthy ones. Layer 4 balances by IP and port; Layer 7 by HTTP content. Common methods: round robin and least connections.', yt: 'ByteByteGo load balancer system design', quiz: [
-        { q: 'A load balancer mainly helps with:', o: ['Scale and failover', 'Storing files', 'Writing SQL', 'Compiling code'], a: 0, why: 'It spreads traffic and routes around failed servers.' },
-        { q: 'Layer 7 balancing uses:', o: ['HTTP content', 'Only IP addresses', 'Disk sectors', 'Memory pages'], a: 0, why: 'Layer 7 reads the request, such as the path or headers.' } ] },
-      { id: 'cache', title: 'Caching', sum: 'A cache keeps answers to slow queries in fast memory such as Redis. Cache-aside: read the cache; on a miss, read the database and store the result with a TTL. The hard part is invalidation.', yt: 'ByteByteGo caching cache aside system design', quiz: [
-        { q: 'In cache-aside, a cache miss means:', o: ['Read the database and fill the cache', 'Return an error', 'Delete the database', 'Skip the cache forever'], a: 0, why: 'Load from the source, then store it for next time.' },
-        { q: 'A TTL on a cache entry:', o: ['Limits how long stale data is kept', 'Makes it permanent', 'Encrypts it', 'Sorts it'], a: 0, why: 'After the TTL the entry expires and is reloaded.' } ] },
-      { id: 'cdn', title: 'CDN', sum: 'A content delivery network stores copies of files on servers near users, so latency drops and the origin server gets fewer requests.', yt: 'ByteByteGo CDN content delivery network system design', quiz: [
-        { q: 'A CDN mainly reduces:', o: ['Latency and origin load', 'Code size', 'Database columns', 'Passwords'], a: 0, why: 'Users get files from a nearby edge server.' },
-        { q: 'A CDN is best for:', o: ['Static files such as images and scripts', 'Password checks', 'Transactions', 'Sorting'], a: 0, why: 'Static content is easy to copy to edges.' } ] },
-      { id: 'queue', title: 'Queues and background workers', sum: 'A queue holds jobs (send email, resize image) so the request can return fast. Workers take jobs off the queue. Delivery is usually at-least-once, so jobs must be safe to run twice.', yt: 'message queues background workers system design explained', quiz: [
-        { q: 'Why put slow work on a queue?', o: ['The request returns fast', 'It makes code shorter', 'It removes bugs', 'It needs no workers'], a: 0, why: 'The user does not wait for the slow job.' },
-        { q: 'If delivery is at-least-once, a job may run:', o: ['Twice', 'Never', 'Only at night', 'Only once'], a: 0, why: 'So the job itself must be idempotent.' } ] },
-      { id: 'shard', title: 'Sharding and consistent hashing', sum: 'Sharding splits data across databases by a key. Plain hash % N remaps almost every key when N changes. Consistent hashing puts servers and keys on a ring, so adding a server moves only a few keys.', yt: 'ByteByteGo consistent hashing', spec: true, quiz: [
-        { q: 'Why is plain hash % N bad when you add a server?', o: ['It remaps almost every key', 'It is too slow', 'It needs a GPU', 'It deletes data'], a: 0, why: 'Changing N changes the result for most keys.' },
-        { q: 'In consistent hashing, a key goes to:', o: ['The next server clockwise on the ring', 'A random server', 'The first server always', 'Every server'], a: 0, why: 'Only keys near the new server move.' } ] },
-      { id: 'cap', title: 'CAP theorem', sum: 'When a network partition splits a system, you choose between answering with possibly stale data (availability) and refusing until the nodes agree (consistency). Partitions happen, so the real choice is C or A during a partition.', yt: 'CAP theorem explained consistency availability partition', quiz: [
-        { q: 'During a network partition, a system must choose between:', o: ['Consistency and availability', 'Speed and cost', 'Read and write', 'Cache and disk'], a: 0, why: 'You cannot have both while the nodes cannot talk.' },
-        { q: 'Partition tolerance in CAP means:', o: ['The system keeps working despite lost messages', 'The system never fails', 'It has no replicas', 'It is encrypted'], a: 0, why: 'In a distributed system, partitions happen, so you must tolerate them.' } ] },
-      { id: 'replag', title: 'Replication lag', sum: 'Replicas copy writes from the primary, often a little late. A user who writes and then reads a replica may not see their own write. Fix by reading from the primary for a short time after a write.', yt: 'database replication lag read your writes explained', quiz: [
-        { q: 'You save a profile change, then reload and see the old name. Likely cause:', o: ['Replication lag', 'A missing CSS file', 'A broken link', 'A DNS typo'], a: 0, why: 'The read went to a replica that had not caught up yet.' },
-        { q: 'Read-your-writes is often fixed by:', o: ['Reading from the primary for a short window after a write', 'Turning off the cache', 'Adding a CDN', 'Deleting the replica'], a: 0, why: 'Route the user\'s reads to the primary briefly.' } ] },
-      { id: 'idem', title: 'Idempotency', sum: 'An idempotent operation gives the same result when repeated. The client sends an idempotency key; the server stores the key and result, so a retry returns the stored result instead of charging twice.', yt: 'idempotency keys API payments explained', quiz: [
-        { q: 'A payment request is retried by a flaky network. Without idempotency, the risk is:', o: ['Charging twice', 'Losing the server', 'Slower CSS', 'A missing index'], a: 0, why: 'Each retry can create a new charge.' },
-        { q: 'An idempotency key lets the server:', o: ['Return the stored result for a repeated request', 'Skip authentication', 'Delete old logs', 'Disable retries'], a: 0, why: 'The same key gives the same answer.' } ] },
-      { id: 'ratelim', title: 'Rate limiter (token bucket)', sum: 'A bucket holds up to N tokens and refills at a fixed rate. Each request takes one token; if the bucket is empty, the request is rejected (HTTP 429). It allows short bursts and a steady average rate.', yt: 'token bucket rate limiter system design', quiz: [
-        { q: 'When the token bucket is empty, the usual response is:', o: ['HTTP 429 (too many requests)', 'HTTP 200', 'A database crash', 'Silent success'], a: 0, why: '429 tells the client to slow down.' },
-        { q: 'A token bucket allows:', o: ['Short bursts with a steady average rate', 'Unlimited requests', 'No requests', 'Only one request a day'], a: 0, why: 'Saved tokens let a burst through.' } ] }
-    ]},
-    { name: 'Applied AI', color: 'b', lessons: [
-      { id: 'lora', title: 'LoRA fine-tuning', sum: 'LoRA freezes the model and trains two small matrices per layer whose product is added to the frozen weights. You train millions of parameters instead of billions, so it fits on one GPU.', yt: 'Sam Witteveen Fine-Tuning LLMs with PEFT and LoRA', spec: true, extra: ['Hugging Face PEFT docs', 'https://huggingface.co/docs/peft'], quiz: [
-        { q: 'LoRA freezes:', o: ['The original model weights', 'The data', 'The GPU', 'The optimizer'], a: 0, why: 'Only the small added matrices are trained.' },
-        { q: 'Why is LoRA cheaper than full fine-tuning?', o: ['It trains far fewer parameters', 'It uses no data', 'It skips the forward pass', 'It runs on CPU only'], a: 0, why: 'Fewer trained parameters means less memory and compute.' } ] },
-      { id: 'vllm', title: 'LLM serving (vLLM)', sum: 'Batching groups requests into one GPU pass. The KV cache stores attention results per token; vLLM manages it in pages so memory is not wasted. Quantisation stores weights in fewer bits to fit more on the GPU.', yt: 'vLLM explained PagedAttention continuous batching', quiz: [
-        { q: 'Batching requests helps because:', o: ['The GPU does more work per pass', 'It removes the model', 'It shortens prompts', 'It deletes the cache'], a: 0, why: 'Parallel work uses the GPU better.' },
-        { q: 'Quantisation mainly reduces:', o: ['Memory per weight', 'The number of questions', 'The prompt text', 'The answer quality to zero'], a: 0, why: 'Fewer bits per weight means a smaller model in memory.' } ] }
-    ]},
-    { name: 'Tooling', color: 'y', lessons: [
-      { id: 'docker', title: 'Docker', sum: 'A container packages an app with its dependencies so it runs the same everywhere. An image is the template; a container is a running instance. A Dockerfile describes how to build the image.', yt: 'Docker tutorial for beginners images containers', quiz: [
-        { q: 'A Docker image is:', o: ['A template for containers', 'A running server', 'A database', 'A password'], a: 0, why: 'Run one or more containers from it.' },
-        { q: 'A Dockerfile is used to:', o: ['Describe how to build an image', 'Store passwords', 'Run tests in the browser', 'Scale databases'], a: 0, why: 'It is the build recipe.' } ] },
-      { id: 'aws', title: 'AWS basics', sum: 'EC2 is a virtual server, S3 is object storage for files, IAM controls who can do what, and RDS is a managed relational database.', yt: 'AWS EC2 S3 IAM RDS beginners explained', quiz: [
-        { q: 'S3 is mainly used for:', o: ['Object and file storage', 'Running servers', 'Access control', 'Relational tables'], a: 0, why: 'Store files and objects.' },
-        { q: 'IAM is for:', o: ['Permissions and identities', 'Storing images', 'Load balancing', 'Compiling code'], a: 0, why: 'Who can do what, on which resources.' } ] },
-      { id: 'playwright', title: 'Playwright', sum: 'Playwright drives a real browser from code: it clicks, types and asserts. It waits for elements automatically, which reduces flaky tests.', yt: 'Playwright tutorial for beginners', quiz: [
-        { q: 'Playwright is used for:', o: ['End-to-end browser tests', 'Writing CSS', 'Database backups', 'DNS'], a: 0, why: 'It runs real browsers in tests.' },
-        { q: 'Why are Playwright tests less flaky?', o: ['It waits for elements automatically', 'It skips assertions', 'It runs without a browser', 'It retries forever'], a: 0, why: 'Auto-waiting avoids timing guesses.' } ] }
-    ]}
-  ];
+  // ---------- avatars (original characters, drawn in SVG) ----------
+  var CHARS = {
+    pip:  { name: 'Pip',  body: '#58cc02', dark: '#58a700', light: '#b6ff7a' },
+    byte: { name: 'Byte', body: '#1cb0f6', dark: '#1899d6', light: '#9be6ff' },
+    luma: { name: 'Luma', body: '#ffc800', dark: '#e5a700', light: '#fff3a6' }
+  };
+  var INK = '#3c3c3c';
 
+  function avatar(id, mood, size) {
+    var c = CHARS[id] || CHARS.pip;
+    var armRot = mood === 'cheer' ? 40 : -15;
+    var arms = '<ellipse cx="14" cy="74" rx="8" ry="12" fill="' + c.dark + '" transform="rotate(' + (-armRot) + ' 14 74)"/>' +
+               '<ellipse cx="106" cy="74" rx="8" ry="12" fill="' + c.dark + '" transform="rotate(' + armRot + ' 106 74)"/>';
+    var body;
+    if (id === 'pip') {
+      body = '<path d="M22 40 L26 8 L50 30 Z" fill="' + c.body + '"/><path d="M98 40 L94 8 L70 30 Z" fill="' + c.body + '"/>' +
+             '<ellipse cx="60" cy="66" rx="44" ry="42" fill="' + c.body + '"/>' +
+             '<ellipse cx="60" cy="86" rx="26" ry="18" fill="' + c.light + '"/>';
+    } else if (id === 'byte') {
+      body = '<line x1="60" y1="24" x2="60" y2="8" stroke="' + c.dark + '" stroke-width="5" stroke-linecap="round"/>' +
+             '<circle cx="60" cy="7" r="7" fill="#ff4b4b"/>' +
+             '<rect x="18" y="24" width="84" height="84" rx="28" fill="' + c.body + '"/>' +
+             '<rect x="36" y="96" width="48" height="7" rx="3.5" fill="' + c.light + '"/>';
+    } else {
+      body = '<path d="M48 26 Q54 4 64 14 Q70 2 80 22 Z" fill="#ff9600"/>' +
+             '<circle cx="60" cy="66" r="44" fill="' + c.body + '"/>' +
+             '<circle cx="60" cy="90" r="18" fill="' + c.light + '" opacity=".7"/>';
+    }
+    var eyes, mouth;
+    if (mood === 'sad') {
+      eyes = '<path d="M34 52 L50 46" stroke="' + INK + '" stroke-width="4" stroke-linecap="round"/>' +
+             '<path d="M86 52 L70 46" stroke="' + INK + '" stroke-width="4" stroke-linecap="round"/>' +
+             '<ellipse cx="44" cy="62" rx="5" ry="6" fill="' + INK + '"/><ellipse cx="76" cy="62" rx="5" ry="6" fill="' + INK + '"/>';
+      mouth = '<path d="M48 90 Q60 80 72 90" fill="none" stroke="' + INK + '" stroke-width="4" stroke-linecap="round"/>';
+    } else if (mood === 'happy' || mood === 'cheer') {
+      eyes = '<path d="M34 62 Q44 46 54 62" fill="none" stroke="' + INK + '" stroke-width="5" stroke-linecap="round"/>' +
+             '<path d="M66 62 Q76 46 86 62" fill="none" stroke="' + INK + '" stroke-width="5" stroke-linecap="round"/>';
+      mouth = '<path d="M46 80 Q60 104 74 80 Z" fill="' + INK + '"/><ellipse cx="60" cy="93" rx="7" ry="4" fill="#ff6b8b"/>';
+    } else {
+      eyes = '<ellipse cx="44" cy="60" rx="8" ry="10" fill="#fff"/><ellipse cx="76" cy="60" rx="8" ry="10" fill="#fff"/>' +
+             '<circle cx="46" cy="62" r="5" fill="' + INK + '"/><circle cx="78" cy="62" r="5" fill="' + INK + '"/>' +
+             '<circle cx="48" cy="59" r="2" fill="#fff"/><circle cx="80" cy="59" r="2" fill="#fff"/>';
+      mouth = '<path d="M50 82 Q60 91 70 82" fill="none" stroke="' + INK + '" stroke-width="4" stroke-linecap="round"/>';
+    }
+    var cheeks = '<circle cx="30" cy="74" r="6" fill="#ff8fb1" opacity=".6"/><circle cx="90" cy="74" r="6" fill="#ff8fb1" opacity=".6"/>';
+    var sparkle = mood === 'cheer'
+      ? '<path d="M8 22 l3 -9 l3 9 l9 3 l-9 3 l-3 9 l-3 -9 l-9 -3z" fill="#ffc800"/>' +
+        '<path d="M108 14 l2.5 -7 l2.5 7 l7 2.5 l-7 2.5 l-2.5 7 l-2.5 -7 l-7 -2.5z" fill="#ffc800"/>'
+      : '';
+    var svg = '<svg viewBox="0 0 120 120" width="' + size + '" height="' + size + '" aria-hidden="true">' +
+              arms + body + cheeks + eyes + mouth + sparkle + '</svg>';
+    return '<span class="av ' + mood + '">' + svg + '</span>';
+  }
+
+  // ---------- helpers ----------
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function ytUrl(q) { return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q); }
+  function stars(r) {
+    var s = ''; for (var k = 1; k <= 5; k++) s += k <= r ? '★' : '<span class="off">★</span>';
+    return '<span class="stars" aria-label="' + r + ' of 5">' + s + '</span>';
+  }
+  function shuffle(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function pick(list) { return list[Math.floor(Math.random() * list.length)]; }
+
+  // ---------- data and state ----------
   var LESSONS = [];
   UNITS.forEach(function (u, ui) { u.lessons.forEach(function (l, li) { l.unit = u; l.unitIndex = ui; LESSONS.push(l); }); });
 
-  var KEY = 'job-path-v1';
-  var state = { done: {}, xp: 0, streak: 0, lastDay: '', right: 0, asked: 0 };
-  try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s) state = Object.assign(state, s); } catch (e) {}
+  var KEY = 'job-path-v2', OLD_KEY = 'job-path-v1';
+  var state = { done: {}, xp: 0, streak: 0, lastDay: '', right: 0, asked: 0, buddy: 'pip' };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || localStorage.getItem(OLD_KEY) || 'null');
+    if (saved) state = Object.assign(state, saved);
+  } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
-  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function isDone(id) { return !!state.done[id]; }
 
   // Streak: count a day when the app is opened on a new calendar day.
   (function touchStreak() {
@@ -312,13 +368,16 @@ button { font: inherit; cursor: pointer; }
     state.lastDay = today; save();
   })();
 
-  function ytUrl(q) { return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(q); }
-  function isDone(id) { return !!state.done[id]; }
-  function isUnlocked(i) { return true; }
+  // ---------- path ----------
+  function renderHero() {
+    var b = CHARS[state.buddy] || CHARS.pip;
+    document.getElementById('hero').innerHTML =
+      '<div class="hero">' + avatar(state.buddy, 'idle', 84) +
+      '<div class="bubble">Hi, I\'m ' + esc(b.name) + '. Tap a lesson to learn it, read what people wrote about it, then practise.</div></div>';
+  }
 
   function renderPath() {
-    var html = '';
-    var lastUnit = -1;
+    var html = '', lastUnit = -1, nextUp = LESSONS.findIndex(function (x) { return !isDone(x.id); });
     LESSONS.forEach(function (l, i) {
       if (l.unitIndex !== lastUnit) {
         var u = UNITS[l.unitIndex];
@@ -327,11 +386,9 @@ button { font: inherit; cursor: pointer; }
         html += '<div class="path">';
         lastUnit = l.unitIndex;
       }
-      var unlocked = isUnlocked(i);
-      var nextUp = LESSONS.findIndex(function (x) { return !isDone(x.id); });
       var cls = isDone(l.id) ? 'done' : (i === nextUp ? 'current' : '');
-      var icon = isDone(l.id) ? '✓' : (unlocked ? String(i + 1) : '🔒');
-      html += '<div class="row"><button class="node-btn ' + cls + '" data-lesson="' + i + '" type="button" ' + (unlocked ? '' : 'disabled') + ' aria-label="' + esc(l.title) + '"><span class="num">' + icon + '</span></button>' +
+      var icon = isDone(l.id) ? '✓' : String(i + 1);
+      html += '<div class="row"><button class="node-btn ' + cls + '" data-lesson="' + i + '" type="button" aria-label="' + esc(l.title) + '"><span class="num">' + icon + '</span></button>' +
         '<div class="node-label">' + esc(l.title) + '</div></div>';
       var next = LESSONS[i + 1];
       if (!next || next.unitIndex !== l.unitIndex) html += '</div>';
@@ -350,92 +407,350 @@ button { font: inherit; cursor: pointer; }
     document.getElementById('statStreak').textContent = state.streak;
     document.getElementById('statRight').textContent = state.right;
     document.getElementById('statAsked').textContent = state.asked;
+    document.getElementById('buddies').innerHTML = Object.keys(CHARS).map(function (id) {
+      return '<button class="buddy' + (state.buddy === id ? ' on' : '') + '" data-buddy="' + id + '" type="button">' +
+        avatar(id, 'idle', 64) + '<span>' + CHARS[id].name + '</span></button>';
+    }).join('');
   }
 
+  // ---------- sheet ----------
   var sheet = document.getElementById('sheet');
   var scrim = document.getElementById('scrim');
   var sheetBody = document.getElementById('sheetBody');
+  var curI = 0, S = null; // current lesson index; practice session
 
-  function openSheet(html) {
-    sheetBody.innerHTML = html;
-    sheet.classList.add('open'); scrim.classList.add('open');
-    sheet.scrollTop = 0;
-  }
+  function openSheet() { sheet.classList.add('open'); scrim.classList.add('open'); sheet.scrollTop = 0; }
   function closeSheet() { sheet.classList.remove('open'); scrim.classList.remove('open'); }
   scrim.addEventListener('click', closeSheet);
 
-  function showLesson(i) {
-    var l = LESSONS[i];
-    var extra = l.extra ? '<a class="btn ghost" href="' + esc(l.extra[1]) + '" target="_blank" rel="noopener">' + esc(l.extra[0]) + ' ↗</a>' : '';
-    openSheet(
-      '<span class="tag">' + esc(l.unit.name) + (l.spec ? ' · specific video' : '') + '</span>' +
+  function tabsHtml(active) {
+    var labels = { learn: 'Learn', reads: 'Reads', practice: 'Practice' };
+    return '<button class="x" data-act="close" type="button" aria-label="Close">✕</button>' +
+      '<div class="tabs" role="tablist">' + Object.keys(labels).map(function (t) {
+        return '<button class="tab' + (active === t ? ' on' : '') + '" data-tab="' + t + '" type="button" role="tab">' + labels[t] + '</button>';
+      }).join('') + '</div>';
+  }
+
+  function learnHtml(l) {
+    return '<span class="tag">' + esc(l.unit.name) + (l.spec ? ' · specific video' : '') + '</span>' +
       '<h3 id="sheetTitle">' + esc(l.title) + '</h3>' +
-      '<p class="sum">' + esc(l.sum) + '</p>' +
+      '<div class="lesson-hero">' + avatar(state.buddy, 'idle', 72) + '<div class="bubble">' + esc(l.sum) + '</div></div>' +
+      l.explain.map(function (p) { return '<p class="para">' + esc(p) + '</p>'; }).join('') +
+      (l.code ? '<div class="sec-h">Worked example</div><pre class="code"><code>' + esc(l.code) + '</code></pre>' : '') +
+      '<div class="sec-h">Video</div>' +
       '<a class="btn blue" href="' + esc(ytUrl(l.yt)) + '" target="_blank" rel="noopener">▶ Watch on YouTube ↗</a>' +
-      extra +
-      '<p class="muted" style="font-size:.85rem">Opens a YouTube search for: "' + esc(l.yt) + '". Pick the video that fits.</p>' +
-      '<button class="btn green" id="startQuiz" type="button">Start questions</button>'
-    );
-    document.getElementById('startQuiz').addEventListener('click', function () { runQuiz(i, 0, 0); });
+      (l.extra ? '<a class="btn ghost" href="' + esc(l.extra[1]) + '" target="_blank" rel="noopener">' + esc(l.extra[0]) + ' ↗</a>' : '') +
+      '<p class="muted small">Opens a YouTube search for: "' + esc(l.yt) + '". Pick the video that fits.</p>' +
+      '<button class="btn green" data-act="start" type="button">Start practice (' + l.ex.length + ' questions)</button>';
   }
 
-  function runQuiz(i, qi, correct) {
+  function readsHtml(l) {
+    return '<div class="sec-h">Posts from the web</div>' +
+      '<p class="muted small">Rated 1–5 for depth, accuracy and clarity. Judged from search results and the source, not a full read of every page. Check before you rely on one.</p>' +
+      l.posts.map(function (p) {
+        return '<div class="post"><div class="post-h">' + esc(p.t) + '</div>' +
+          '<div class="meta">' + esc(p.by) + ' · ' + stars(p.r) + '</div>' +
+          '<p class="para">' + esc(p.take) + '</p>' +
+          '<a class="btn ghost" href="' + esc(p.url) + '" target="_blank" rel="noopener">Read ↗</a></div>';
+      }).join('') +
+      (l.note ? '<p class="muted small">' + esc(l.note) + '</p>' : '');
+  }
+
+  function openLesson(i, tab) {
+    curI = i;
     var l = LESSONS[i];
-    if (qi >= l.quiz.length) return finishLesson(i, correct);
-    var q = l.quiz[qi];
-    var keys = ['A', 'B', 'C', 'D'];
-    var opts = q.o.map(function (t, k) { return '<button class="opt" data-k="' + k + '" type="button"><span class="key">' + keys[k] + '</span><span>' + esc(t) + '</span></button>'; }).join('');
-    openSheet(
-      '<span class="tag">Question ' + (qi + 1) + ' of ' + l.quiz.length + '</span>' +
-      '<div class="quiz-q">' + esc(q.q) + '</div>' +
-      '<div id="opts">' + opts + '</div>' +
-      '<div class="feedback" id="fb"></div>' +
-      '<button class="btn green hidden" id="next" type="button">Continue</button>'
-    );
-    var answered = false;
-    sheetBody.querySelectorAll('.opt').forEach(function (b) {
-      b.addEventListener('click', function () {
-        if (answered) return; answered = true;
-        var k = +b.getAttribute('data-k');
-        var fb = document.getElementById('fb');
-        sheetBody.querySelectorAll('.opt').forEach(function (x, idx) {
-          if (idx === q.a) x.classList.add('ok');
-          x.disabled = true;
+    openSheet();
+    if (tab === 'practice') {
+      if (S && S.i === i && S.hearts > 0 && S.idx < S.list.length) return renderEx();
+      return startSession(i);
+    }
+    sheetBody.innerHTML = tabsHtml(tab) + (tab === 'reads' ? readsHtml(l) : learnHtml(l));
+  }
+
+  sheetBody.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-tab],[data-act]');
+    if (!t) return;
+    if (t.getAttribute('data-tab')) return openLesson(curI, t.getAttribute('data-tab'));
+    var act = t.getAttribute('data-act');
+    if (act === 'close') closeSheet();
+    else if (act === 'start') openLesson(curI, 'practice');
+    else if (act === 'retry') startSession(curI);
+    else if (act === 'learn') openLesson(curI, 'learn');
+    else if (act === 'next') openLesson(curI + 1, 'learn');
+  });
+
+  // ---------- practice engine ----------
+  var HINT = {
+    mc: 'Pick the best answer.', tf: 'True or false?', multi: 'Pick every correct answer.',
+    order: 'Tap the steps in the right order.', fill: 'Type your answer.', blank: 'Tap a word to fill the gap.',
+    match: 'Tap a left item, then its partner.', num: 'Type the number.', tapline: 'Tap the line that matches the question.'
+  };
+  var KEYS = ['A', 'B', 'C', 'D', 'E', 'F'];
+  var GOOD = ['Nice one!', 'Exactly right.', 'You got it.', 'Sharp work.'];
+  var BAD = ['Close. Read the answer and keep going.', 'No worries, that one trips people up.', 'Not this time. Learn from it.'];
+
+  function startSession(i) {
+    S = { i: i, list: LESSONS[i].ex.slice(), idx: 0, hearts: 3, correct: 0, checked: false, ans: null };
+    renderEx();
+  }
+
+  function renderEx() {
+    if (S.hearts <= 0) return renderFail();
+    if (S.idx >= S.list.length) return renderDone();
+    var ex = S.list[S.idx];
+    S.checked = false; S.ans = null;
+    var hearts = '';
+    for (var k = 0; k < 3; k++) hearts += '<span class="' + (k < S.hearts ? '' : 'lost') + '">♥</span>';
+    var pct = Math.round(S.idx / S.list.length * 100);
+    var promptHtml;
+    if (ex.t === 'blank') {
+      var parts = ex.q.split('___');
+      promptHtml = '<div class="quiz-q">' + esc(parts[0]) + '<span class="blank-slot" id="slot">&nbsp;</span>' + esc(parts.slice(1).join('___')) + '</div>';
+    } else {
+      promptHtml = '<div class="quiz-q">' + esc(ex.q) + '</div>';
+    }
+    sheetBody.innerHTML = tabsHtml('practice') +
+      '<div class="pr-top"><div class="progress"><span style="width:' + pct + '%"></span></div><div class="hearts">' + hearts + '</div></div>' +
+      '<div class="ex-row" id="exRow">' + avatar(state.buddy, 'idle', 64) + '<div class="bubble">' + esc(HINT[ex.t]) + '</div></div>' +
+      '<div class="ex-prompt">' + promptHtml + '</div>' +
+      '<div id="area" data-t="' + ex.t + '"></div>' +
+      '<div class="pr-foot"><div class="fbbar" id="fbbar"></div><button class="btn green" id="chk" type="button" disabled>Check</button></div>';
+    var area = document.getElementById('area');
+    BUILD[ex.t](ex, area);
+    document.getElementById('chk').addEventListener('click', onCheck);
+  }
+
+  function ready(on) { var b = document.getElementById('chk'); if (b) b.disabled = !on; }
+
+  var BUILD = {
+    mc: function (ex, area) {
+      area.innerHTML = ex.o.map(function (t, k) {
+        return '<button class="opt" data-k="' + k + '" type="button"><span class="key">' + KEYS[k] + '</span><span>' + esc(t) + '</span></button>';
+      }).join('');
+      area.querySelectorAll('.opt').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (S.checked) return;
+          area.querySelectorAll('.opt').forEach(function (x) { x.classList.remove('sel'); });
+          b.classList.add('sel'); S.ans = +b.getAttribute('data-k'); ready(true);
         });
-        state.asked++;
-        if (k === q.a) { state.right++; correct++; b.classList.add('ok'); fb.className = 'feedback show ok'; fb.innerHTML = 'Correct!<small>' + esc(q.why) + '</small>'; }
-        else { b.classList.add('bad'); fb.className = 'feedback show bad'; fb.innerHTML = 'Not quite. The answer is ' + keys[q.a] + '.<small>' + esc(q.why) + '</small>'; }
-        state.xp += k === q.a ? 10 : 2;
-        save(); updateStats();
-        document.getElementById('next').classList.remove('hidden');
-        document.getElementById('next').addEventListener('click', function () { runQuiz(i, qi + 1, correct); });
       });
-    });
+    },
+
+    tf: function (ex, area) {
+      area.innerHTML = '<div class="tf"><button class="opt-big" data-v="1" type="button">True</button><button class="opt-big" data-v="0" type="button">False</button></div>';
+      area.querySelectorAll('.opt-big').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (S.checked) return;
+          area.querySelectorAll('.opt-big').forEach(function (x) { x.classList.remove('sel'); });
+          b.classList.add('sel'); S.ans = b.getAttribute('data-v') === '1'; ready(true);
+        });
+      });
+    },
+
+    multi: function (ex, area) {
+      S.ans = [];
+      area.innerHTML = ex.o.map(function (t, k) {
+        return '<button class="opt" data-k="' + k + '" type="button"><span class="key">' + KEYS[k] + '</span><span>' + esc(t) + '</span></button>';
+      }).join('');
+      area.querySelectorAll('.opt').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (S.checked) return;
+          var k = +b.getAttribute('data-k');
+          var at = S.ans.indexOf(k);
+          if (at >= 0) { S.ans.splice(at, 1); b.classList.remove('sel'); }
+          else { S.ans.push(k); b.classList.add('sel'); }
+          ready(S.ans.length > 0);
+        });
+      });
+    },
+
+    order: function (ex, area) {
+      var bank, built = [];
+      do { bank = shuffle(ex.items.map(function (t, i) { return { t: t, i: i }; })); }
+      while (ex.items.length > 1 && bank.every(function (x, j) { return x.i === j; }));
+      function draw() {
+        area.innerHTML = '<div class="built">' + built.map(function (x, j) {
+          return '<button class="tile on" data-j="' + j + '" type="button">' + esc(x.t) + '</button>';
+        }).join('') + '</div><div class="bank">' + bank.map(function (x, j) {
+          return '<button class="tile" data-j="' + j + '" type="button">' + esc(x.t) + '</button>';
+        }).join('') + '</div>';
+        area.querySelectorAll('.bank .tile').forEach(function (b) {
+          b.addEventListener('click', function () {
+            if (S.checked) return;
+            built.push(bank.splice(+b.getAttribute('data-j'), 1)[0]);
+            S.ans = built.map(function (x) { return x.t; }); draw(); ready(built.length === ex.items.length);
+          });
+        });
+        area.querySelectorAll('.built .tile').forEach(function (b) {
+          b.addEventListener('click', function () {
+            if (S.checked) return;
+            bank.push(built.splice(+b.getAttribute('data-j'), 1)[0]);
+            S.ans = built.map(function (x) { return x.t; }); draw(); ready(built.length === ex.items.length);
+          });
+        });
+      }
+      draw();
+    },
+
+    fill: function (ex, area) {
+      area.innerHTML = '<input class="ans" id="ans" type="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Type your answer">';
+      var input = document.getElementById('ans');
+      input.focus();
+      input.addEventListener('input', function () { S.ans = input.value; ready(input.value.trim().length > 0); });
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !document.getElementById('chk').disabled) onCheck();
+      });
+    },
+
+    blank: function (ex, area) {
+      var slot = document.getElementById('slot'), used = null;
+      area.innerHTML = '<div class="bank">' + ex.bank.map(function (w, j) {
+        return '<button class="tile" data-j="' + j + '" type="button">' + esc(w) + '</button>';
+      }).join('') + '</div>';
+      area.querySelectorAll('.tile').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (S.checked || used) return;
+          used = b; b.classList.add('used');
+          S.ans = b.textContent; slot.textContent = b.textContent; slot.classList.add('filled'); ready(true);
+        });
+      });
+      slot.addEventListener('click', function () {
+        if (S.checked || !used) return;
+        used.classList.remove('used'); used = null;
+        S.ans = null; slot.innerHTML = '&nbsp;'; slot.classList.remove('filled'); ready(false);
+      });
+    },
+
+    match: function (ex, area) {
+      var rights = shuffle(ex.pairs.map(function (p, i) { return i; }));
+      var selL = null, matched = 0, mistakes = 0, n = ex.pairs.length;
+      S.ans = { ok: true };
+      area.innerHTML = '<div class="match"><div class="mcol">' + ex.pairs.map(function (p, i) {
+        return '<button class="mt" data-l="' + i + '" type="button">' + esc(p[0]) + '</button>';
+      }).join('') + '</div><div class="mcol">' + rights.map(function (i) {
+        return '<button class="mt" data-r="' + i + '" type="button">' + esc(ex.pairs[i][1]) + '</button>';
+      }).join('') + '</div></div>';
+      area.querySelectorAll('[data-l]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (S.checked || b.classList.contains('matched')) return;
+          area.querySelectorAll('[data-l]').forEach(function (x) { x.classList.remove('sel'); });
+          b.classList.add('sel'); selL = +b.getAttribute('data-l');
+        });
+      });
+      area.querySelectorAll('[data-r]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (S.checked || selL === null || b.classList.contains('matched')) return;
+          var leftBtn = area.querySelector('[data-l="' + selL + '"]');
+          if (+b.getAttribute('data-r') === selL) {
+            leftBtn.classList.remove('sel'); leftBtn.classList.add('matched');
+            b.classList.add('matched');
+            matched++;
+            if (matched === n) ready(true);
+          } else {
+            mistakes++; S.ans = { ok: mistakes === 0 };
+            leftBtn.classList.add('miss'); b.classList.add('miss');
+            (function (l, r) { setTimeout(function () { l.classList.remove('miss', 'sel'); r.classList.remove('miss'); }, 600); })(leftBtn, b);
+          }
+          selL = null;
+        });
+      });
+    },
+
+    num: function (ex, area) {
+      area.innerHTML = '<input class="ans" id="ans" type="number" inputmode="decimal" step="any" placeholder="Type a number">';
+      var input = document.getElementById('ans');
+      input.focus();
+      input.addEventListener('input', function () {
+        S.ans = input.value === '' ? null : Number(input.value);
+        ready(S.ans !== null && !isNaN(S.ans));
+      });
+    },
+
+    tapline: function (ex, area) {
+      area.innerHTML = '<div class="code">' + ex.code.split('\n').map(function (ln, k) {
+        return '<div class="codeline" data-k="' + k + '">' + esc(ln) + '</div>';
+      }).join('') + '</div>';
+      area.querySelectorAll('.codeline').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (S.checked) return;
+          area.querySelectorAll('.codeline').forEach(function (x) { x.classList.remove('sel'); });
+          b.classList.add('sel'); S.ans = +b.getAttribute('data-k'); ready(true);
+        });
+      });
+    }
+  };
+
+  function norm(s) { return String(s || '').trim().toLowerCase().replace(/\.$/, '').replace(/\s+/g, ' '); }
+
+  function evaluate(ex, ans) {
+    switch (ex.t) {
+      case 'mc':      return { ok: ans === ex.a, right: ex.o[ex.a] };
+      case 'tf':      return { ok: ans === ex.a, right: ex.a ? 'True' : 'False' };
+      case 'multi':   return { ok: JSON.stringify((ans || []).slice().sort()) === JSON.stringify(ex.a.slice().sort()), right: ex.a.map(function (i) { return ex.o[i]; }).join(', ') };
+      case 'order':   return { ok: JSON.stringify(ans) === JSON.stringify(ex.items), right: ex.items.join(' → ') };
+      case 'fill':    return { ok: ex.a.some(function (a) { return norm(a) === norm(ans); }), right: ex.a[0] };
+      case 'blank':   return { ok: ans === ex.a, right: ex.a };
+      case 'match':   return { ok: !!(ans && ans.ok), right: ex.pairs.map(function (p) { return p[0] + ' = ' + p[1]; }).join('; ') };
+      case 'num':     return { ok: ans !== null && Math.abs(ans - ex.a) < 1e-9, right: String(ex.a) };
+      case 'tapline': return { ok: ans === ex.a, right: ex.code.split('\n')[ex.a].trim() };
+    }
+    return { ok: false, right: '' };
   }
 
-  function finishLesson(i, correct) {
-    var l = LESSONS[i];
+  function onCheck() {
+    var ex = S.list[S.idx];
+    var btn = document.getElementById('chk');
+    if (!S.checked) {
+      var res = evaluate(ex, S.ans);
+      S.checked = true;
+      state.asked++;
+      if (res.ok) { S.correct++; state.right++; state.xp += 10; }
+      else { S.hearts--; }
+      save(); updateStats();
+      document.getElementById('area').classList.add('locked');
+      document.getElementById('area').querySelectorAll('input').forEach(function (i) { i.disabled = true; });
+      var fb = document.getElementById('fbbar');
+      fb.className = 'fbbar show ' + (res.ok ? 'ok' : 'bad');
+      fb.innerHTML = (res.ok ? 'Correct! ' : 'Not quite. Answer: <b>' + esc(res.right) + '</b>') + '<small>' + esc(ex.why) + '</small>';
+      document.getElementById('exRow').innerHTML = avatar(state.buddy, res.ok ? 'happy' : 'sad', 64) +
+        '<div class="bubble">' + esc(res.ok ? pick(GOOD) : pick(BAD)) + '</div>';
+      btn.textContent = 'Continue';
+      btn.disabled = false;
+    } else {
+      S.idx++;
+      renderEx();
+    }
+  }
+
+  function renderDone() {
+    var l = LESSONS[S.i], total = S.list.length;
     var wasDone = isDone(l.id);
     state.done[l.id] = true;
     if (!wasDone) state.xp += 20;
-    save(); updateStats(); renderPath();
-    var total = l.quiz.length;
-    openSheet(
-      '<div class="done-screen"><div class="big">🎉</div><h3 id="sheetTitle">Lesson complete</h3>' +
-      '<p>You got ' + correct + ' of ' + total + ' right.</p>' +
-      '<p class="muted">+' + (wasDone ? 0 : 20) + ' XP</p>' +
-      (i + 1 < LESSONS.length ? '<button class="btn green" id="nextLesson" type="button">Next lesson</button>' : '') +
-      '<button class="btn ghost" id="closeIt" type="button">Back to path</button></div>'
-    );
-    document.getElementById('closeIt').addEventListener('click', closeSheet);
-    var nl = document.getElementById('nextLesson');
-    if (nl) nl.addEventListener('click', function () { showLesson(i + 1); });
+    save(); renderPath(); updateStats();
+    sheetBody.innerHTML = '<div class="done-screen">' + avatar(state.buddy, 'cheer', 120) +
+      '<h3 id="sheetTitle">Lesson complete</h3>' +
+      '<p>You got ' + S.correct + ' of ' + total + ' right.</p>' +
+      '<p class="muted">+' + (wasDone ? 0 : 20) + ' bonus XP</p>' +
+      (S.i + 1 < LESSONS.length ? '<button class="btn green" data-act="next" type="button">Next lesson</button>' : '') +
+      '<button class="btn ghost" data-act="close" type="button">Back to path</button></div>';
   }
 
+  function renderFail() {
+    var i = S.i;
+    sheetBody.innerHTML = '<div class="done-screen">' + avatar(state.buddy, 'sad', 120) +
+      '<h3 id="sheetTitle">Out of hearts</h3>' +
+      '<p>Practice again to refill your hearts. Re-read the explanation if a topic is new.</p>' +
+      '<button class="btn green" data-act="retry" type="button">Try again</button>' +
+      '<button class="btn ghost" data-act="learn" type="button">Back to lesson</button></div>';
+    curI = i;
+  }
+
+  // ---------- events ----------
   document.getElementById('path').addEventListener('click', function (e) {
     var b = e.target.closest('[data-lesson]');
-    if (!b || b.disabled) return;
-    showLesson(+b.getAttribute('data-lesson'));
+    if (!b) return;
+    openLesson(+b.getAttribute('data-lesson'), 'learn');
   });
 
   document.querySelectorAll('.nav [data-go]').forEach(function (b) {
@@ -447,11 +762,19 @@ button { font: inherit; cursor: pointer; }
     });
   });
 
-  document.getElementById('reset').addEventListener('click', function () {
-    state.done = {}; state.xp = 0; state.right = 0; state.asked = 0; save(); renderPath(); updateStats();
+  document.getElementById('buddies').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-buddy]');
+    if (!b) return;
+    state.buddy = b.getAttribute('data-buddy'); save();
+    renderHero(); updateStats();
   });
 
-  renderPath(); updateStats();
+  document.getElementById('reset').addEventListener('click', function () {
+    state.done = {}; state.xp = 0; state.right = 0; state.asked = 0; S = null; save();
+    renderPath(); updateStats();
+  });
+
+  renderHero(); renderPath(); updateStats();
 })();
 </script>
 </body>
